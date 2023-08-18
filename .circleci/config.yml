@@ -9,7 +9,7 @@ jobs:
       - image: cimg/mysql:5.7
         environment:
           MYSQL_USER: xyz
-          MYSQL_ROOT_PASSWORD: '123'
+          MYSQL_ROOT_PASSWORD: 123
           MYSQL_DATABASE: old_days
     working_directory: ~/laravel
     steps:
