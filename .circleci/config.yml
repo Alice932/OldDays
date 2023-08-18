@@ -1,58 +1,54 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.1
+  node: circleci/node@5
+  php: circleci/php@1
 jobs:
-  build:
-    docker:
-      # Specify the version you desire here
-      - image: cimg/php:7.4.14-browsers
-
+  build-node:
+    # Build node project
+    executor: node/default
     steps:
-      - browser-tools/install-browser-tools
       - checkout
-
+      - node/install-packages:
+          cache-path: ~/project/node_modules
+          override-ci-command: npm install
       - run:
-          name: "Create Environment file and generate app key"
-          command: |
-            mv .env.testing .env
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            # "composer.lock" can be used if it is committed to the repo
-            - v1-dependencies-{{ checksum "composer.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+          command: npm run build
       - run:
-          name: "Install Dependencies"
-          command: composer install -n --prefer-dist
-
-      - save_cache:
-          key: v1-dependencies-{{ checksum "composer.json" }}
-          paths:
-            - ./vendor
-
-      # prepare the database
+          name: Create the ~/artifacts directory if it doesn't exist
+          command: mkdir -p ~/artifacts
+      # Copy output to artifacts dir
       - run:
-          name: "Generate App key"
-          command: php artisan key:generate
-
+          name: Copy artifacts
+          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+      - store_artifacts:
+          path: ~/artifacts
+          destination: node-build
+  test-php:
+    # Install php packages and run tests
+    docker:
+      - image: cimg/php:8.2.7-node
+    steps:
+      - checkout
+      - php/install-packages
       - run:
-          name: "Install sqlite"
-          command: sudo apt-get install php7.4-sqlite3
-
+          name: run tests
+          command: ./vendor/bin/phpunit
+  deploy:
+    # This is an example deploy job, not actually used by the workflow
+    docker:
+      - image: cimg/base:stable
+    steps:
+      # Replace this with steps to deploy to users
       - run:
-          name: "Create database and run migration"
-          command: |
-            touch database/database.sqlite
-            php artisan migrate --env=testing
-
-      - run:
-          name: "Generate Passport encryption keys"
-          command: php artisan passport:install
-
-      # run tests with phpunit
-      - run:
-          name: "Run Tests"
-          command: php artisan test
+          name: deploy
+          command: '#e.g. ./deploy.sh'
+workflows:
+  build-and-test:
+    jobs:
+      - build-node:
+          requires:
+            - test-php
+      - test-php
+    # - deploy:
+    #     requires:
+    #       - build-node
