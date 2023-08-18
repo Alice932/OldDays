@@ -8,7 +8,6 @@ jobs:
       - image: cimg/php:8.2-browsers
       - image: cimg/mysql:5.7
         environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_USER: xyz
           MYSQL_ROOT_PASSWORD: '123'
           MYSQL_DATABASE: old_days
