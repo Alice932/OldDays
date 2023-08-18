@@ -9,6 +9,8 @@ jobs:
       - image: cimg/mysql:5.7
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_USER: xyz
+          MYSQL_ROOT_PASSWORD: '123'
           MYSQL_DATABASE: old_days
     working_directory: ~/laravel
     steps:
@@ -76,7 +78,7 @@ jobs:
       - run:
          name: Cache Laravel Config
          command: php artisan config:cache
-         
+
       - run:
          name: Migrate Laravel Database
          command: php artisan migrate --env=testing --force
