@@ -4,7 +4,7 @@ jobs:
     docker:
       # Specify the version you desire here
       - image: cimg/php:8.2-browsers
-      - image: circleci/mysql:5.7
+      - image: cimg/mysql:5.7
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: old_days
@@ -18,7 +18,7 @@ jobs:
           command: |
             sudo docker-php-ext-install zip
             sudo docker-php-ext-install pdo_mysql
-            sudo apt install -y mariadb-client
+            sudo apt install -y mysql-client
       - run: sudo composer self-update
 
       # Download and cache dependencies
