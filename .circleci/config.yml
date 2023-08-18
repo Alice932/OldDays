@@ -9,9 +9,9 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: laravel
+          MYSQL_DATABASE: old_days
 
-    working_directory: ~/laravel
+    working_directory: ~/olddays
 
     steps:
       - checkout
