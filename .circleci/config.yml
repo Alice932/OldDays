@@ -1,7 +1,7 @@
 version: 2
 machine:
   php:
-    version: 8.2.8
+    version: 8.2.
 jobs:
   build:
     docker:
@@ -17,11 +17,17 @@ jobs:
           name: Install PHP extensions
           command: sudo docker-php-ext-install pdo_mysql
 
+      #https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm
+      #We are using Node JS 6 because that's the current version on our local vagrant/homestead machines
+      # - run:
+      #    name: Download NodeJS v6
+      #    command: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
       #sqlite needed for laravel database
       #nodejs6 needed to run `npm run watch` later
       - run:
-         name: Install PHP sqlite and nodejs 6
-         command: sudo apt-get install -y libsqlite3-dev nodejs
+         name: Install PHP sqlite
+         command: sudo apt-get install -y libsqlite3-dev
 
       # Leave this for future use if php-zip is ever required
       # If you remove the flag 'composer install --ignore-platform-reqs`
@@ -39,9 +45,9 @@ jobs:
       #   name: Install zip package for PHP
       #   command: sudo docker-php-ext-install zip
 
-      - run:
-         name: Setup Laravel testing environment variables for CircleCI test
-         command: cp .env.testing .env
+      # - run:
+      #    name: Setup Laravel testing environment variables for CircleCI test
+      #    command: cp .env.testing .env
 
       - run:
          name: Update composer to latest version
